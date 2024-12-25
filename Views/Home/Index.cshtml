@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-5">
+        <div class="container">
+            <h1 class="fw-bold">Welcome to JobPortal</h1>
+            <a class="btn btn-light btn-lg me-2" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="btn btn-light btn-lg me-2" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <h1 class="fw-bold ">Place to find a Job you needed</h1>
+        </div>
+    </header>
+
+</body>
+</div>
