@@ -1,59 +1,42 @@
 @model IEnumerable<JobPortal.Models.Application>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = " Index ";
 }
 
-<h1>Index</h1>
+<h1> here you can find list of applications </h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AppliedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Job)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppliedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Job.JobId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApplicationId">Delete</a>
-            </td>
-        </tr>
+@if (User.IsInRole("Employer"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">find New Applicant</a>
+    </p>
 }
-    </tbody>
-</table>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-white bg-success p-2">Title: @item.Job.Title</h5>
+                    <p class="card-text">
+                        
+                        <strong>Applicant:</strong> @item.User.FirstName<br />
+                        <strong>Status:</strong> @item.Status<br />
+                        <strong>Notes:</strong> @item.Notes<br />
+                        <strong>Applied Date:</strong> @item.AppliedDate.ToShortDateString()<br />
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId" class="btn btn-info btn-sm">Details</a>
+                        @if (User.IsInRole("Employer"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ApplicationId" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.ApplicationId" class="btn btn-danger btn-sm">Delete</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

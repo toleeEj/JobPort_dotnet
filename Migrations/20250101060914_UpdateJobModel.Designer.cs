@@ -3,6 +3,7 @@ using System;
 using JobPortal.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobPortal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250101060914_UpdateJobModel")]
+    partial class UpdateJobModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -26,9 +29,6 @@ namespace JobPortal.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("JobId")
                         .HasColumnType("INTEGER");
 
@@ -41,8 +41,6 @@ namespace JobPortal.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ApplicationId");
-
-                    b.HasIndex("Id");
 
                     b.HasIndex("JobId");
 
@@ -318,12 +316,6 @@ namespace JobPortal.Migrations
 
             modelBuilder.Entity("JobPortal.Models.Application", b =>
                 {
-                    b.HasOne("JobPortal.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("JobPortal.Models.Job", "Job")
                         .WithMany()
                         .HasForeignKey("JobId")
@@ -331,8 +323,6 @@ namespace JobPortal.Migrations
                         .IsRequired();
 
                     b.Navigation("Job");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JobPortal.Models.Job", b =>

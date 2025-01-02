@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobPortal.Data;
 using JobPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobPortal.Controllers
 {
@@ -20,6 +21,7 @@ namespace JobPortal.Controllers
         }
 
         // GET: Jobs
+        [Authorize(Roles = "JobSeeker, Employer")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Jobs.Include(j => j.Employer);
@@ -27,6 +29,7 @@ namespace JobPortal.Controllers
         }
 
         // GET: Jobs/Details/5
+        [Authorize(Roles = "Employer, JobSeeker")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,30 +49,32 @@ namespace JobPortal.Controllers
         }
 
         // GET: Jobs/Create
+        [Authorize(Roles = "Employer")]
         public IActionResult Create()
         {
-            ViewData["Id"] = new SelectList(_context.ApplicationUsers, "Id", "Email");
+            // Change "Id" to "EmployerId" to bind it to the correct field
+            ViewData["EmployerId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
         // POST: Jobs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobId,Title,Description,Requirements,Location,Salary,PostedDate,Deadline,Id")] Job job)
+        public async Task<IActionResult> Create(Job job)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(job);
+                _context.Jobs.Add(job);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Users, "Id", "Id", job.Id);
+            // Bind "EmployerId" in the ViewData
+            ViewData["EmployerId"] = new SelectList(_context.Users, "Id", "Email", job.EmployerId);
             return View(job);
         }
 
         // GET: Jobs/Edit/5
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,16 +87,15 @@ namespace JobPortal.Controllers
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Users, "Id", "Id", job.Id);
+            // Change "Id" to "EmployerId" to bind it to the correct field
+            ViewData["EmployerId"] = new SelectList(_context.Users, "Id", "Email", job.EmployerId);
             return View(job);
         }
 
         // POST: Jobs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("JobId,Title,Description,Requirements,Location,Salary,PostedDate,Deadline,Id")] Job job)
+        public async Task<IActionResult> Edit(int id, Job job)
         {
             if (id != job.JobId)
             {
@@ -118,11 +122,13 @@ namespace JobPortal.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Users, "Id", "Id", job.Id);
+            // Bind "EmployerId" in the ViewData
+            ViewData["EmployerId"] = new SelectList(_context.Users, "Id", "Email", job.EmployerId);
             return View(job);
         }
 
         // GET: Jobs/Delete/5
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

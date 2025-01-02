@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobPortal.Data;
 using JobPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobPortal.Controllers
 {
@@ -20,12 +21,14 @@ namespace JobPortal.Controllers
         }
 
         // GET: Users
+        [Authorize(Roles = "Employer, JobSeeker")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
         // GET: Users/Details/5
+        [Authorize(Roles = "Employer, JobSeeker")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace JobPortal.Controllers
         }
 
         // GET: Users/Create
+       
         public IActionResult Create()
         {
             return View();

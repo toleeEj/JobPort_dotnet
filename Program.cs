@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Services
@@ -27,29 +28,30 @@ builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 
 
 // Configure cookie settings for authentication
-// builder.Services.ConfigureApplicationCookie(options =>
-// {
-//     options.LoginPath = "/Account/Login";
-//     options.AccessDeniedPath = "/Account/AccessDenied";
-//     options.LogoutPath = "/Account/Logout";
-//     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-//     options.SlidingExpiration = true;
-// });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LogoutPath = "/Account/Logout";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;
+});
+
 
 
 
 // Add authentication and authorization services
-// builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//     .AddCookie(options =>
-//     {
-//         options.LoginPath = "/Identity/Account/Login"; // Define the login page URL
-//         options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Define access denied page URL
-//     });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Identity/Account/Login"; // Define the login page URL
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Define access denied page URL
+    });
 
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.FallbackPolicy = options.DefaultPolicy; // Default policy will require authentication for all pages
-// });
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy; // Default policy will require authentication for all pages
+});
 
 // Add Razor Pages with authorization conventions (optional, based on your use case)
 builder.Services.AddRazorPages(options =>
@@ -58,6 +60,17 @@ builder.Services.AddRazorPages(options =>
 });
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    // Resolve the UserManager from the service provider
+    var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    // Call the SeedRoles method to create roles
+    SeedRoles.Initialize(serviceProvider, userManager).Wait();
+}
+
 
 // Configure Middleware
 if (!app.Environment.IsDevelopment())
@@ -69,8 +82,7 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-// Comment out HTTPS redirection as it's not needed
-// app.UseHttpsRedirection();
+
 
 app.UseStaticFiles();
 app.UseRouting();

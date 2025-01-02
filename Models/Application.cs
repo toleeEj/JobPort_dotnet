@@ -11,16 +11,16 @@ namespace JobPortal.Models
 
         [Required]
         public DateTime AppliedDate { get; set; }
+        public required string Status { get; set; }
+        public required string Notes { get; set; }
 
         [ForeignKey("Job")]
-        public int JobId { get; set; }
+        public int JobId { get; set; } = 0;
         public required Job Job { get; set; }
 
         [ForeignKey("User")]
-        public required string Id { get; set; }
-        public required ApplicationUser User { get; set; }
+        public required int Id { get; set; } 
+        public required User User { get; set; }
 
-        public required string Status { get; set; }
-        public required string Notes { get; set; }
     }
 }

@@ -21,13 +21,13 @@
             @Html.DisplayNameFor(model => model.Job)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Job.JobId)
+            @Html.DisplayFor(model => model.Job.Title)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.User)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
+            @Html.DisplayFor(model => model.User.FirstName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
@@ -46,6 +46,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="ApplicationId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">Back</a>
     </form>
 </div>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JobPortal.Migrations
 {
     /// <inheritdoc />
-    public partial class tryAgain : Migration
+    public partial class UpdateJobModelToUseUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -187,8 +187,7 @@ namespace JobPortal.Migrations
                     Salary = table.Column<decimal>(type: "TEXT", nullable: false),
                     PostedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Deadline = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Id = table.Column<int>(type: "INTEGER", nullable: false),
-                    EmployerId = table.Column<string>(type: "TEXT", nullable: true)
+                    EmployerId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -197,7 +196,8 @@ namespace JobPortal.Migrations
                         name: "FK_Jobs_AspNetUsers_EmployerId",
                         column: x => x.EmployerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,7 +208,7 @@ namespace JobPortal.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     AppliedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     JobId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    EmployerId = table.Column<string>(type: "TEXT", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: false)
                 },
@@ -216,8 +216,8 @@ namespace JobPortal.Migrations
                 {
                     table.PrimaryKey("PK_Applications", x => x.ApplicationId);
                     table.ForeignKey(
-                        name: "FK_Applications_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_Applications_AspNetUsers_EmployerId",
+                        column: x => x.EmployerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -230,9 +230,9 @@ namespace JobPortal.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_Id",
+                name: "IX_Applications_EmployerId",
                 table: "Applications",
-                column: "Id");
+                column: "EmployerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_JobId",

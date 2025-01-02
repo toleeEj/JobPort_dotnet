@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-success border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand text-warning fw-bold" asp-area="" asp-controller="Home" asp-action="Index">JobPortal</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -28,31 +28,42 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <!-- Show "Logout" Link if User is Authenticated -->
+                            
+
                             <li class="nav-item">
-                                <a class="nav-link text-light fw-bold" asp-area="Identity" asp-page="/Account/Logout">Logout</a>
+                                <a class="nav-link text-light fw-bold rounded" asp-area="" asp-controller="Jobs" asp-action="Index">ListOfJobs</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Job" asp-action="Index">ListOfJobs</a>
+                                <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Users" asp-action="Index">Members</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Application" asp-action="Index">ApplyHere</a>
+                                <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Applications" asp-action="Index">Applications</a>
                             </li>
 
                             <li class="nav-item">
-                            <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                <a class="nav-link text-light fw-bold" asp-area="" asp-controller="Jobs" asp-action="Create">Post a Job</a>
                             </li>
+
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light fw-bold btn-danger" asp-area="Identity" asp-page="/Account/Logout">Logout</a>
+                                </li>
+                            </ul>
+
                         }
                         else
                         {
                             <!-- Show "Login" and "Register" Links if User is Not Authenticated -->
-                            <li class="nav-item">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
                                 <a class="nav-link text-light fw-bold" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light fw-bold" asp-area="Identity" asp-page="/Account/Register">Register</a>
-                            </li>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light fw-bold" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                </li>
+                            </ul>                           
                         }
                     </ul>
                 </div>
@@ -65,7 +76,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted bg-dark text-light py-3">
+    <footer class="border-top footer text-muted bg-success text-light py-1">
         <div class="container">
             &copy; 2024 - <span class="text-warning">JobPortal</span> - <a class="text-warning fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

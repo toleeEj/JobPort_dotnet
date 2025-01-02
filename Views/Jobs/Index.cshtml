@@ -4,74 +4,44 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>List of available jobs</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if(User.IsInRole("Employer"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Poste a Job</a>
+    }
+    
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Requirements)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deadline)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Employer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Requirements)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deadline)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employer.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.JobId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.JobId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.JobId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-white bg-success p-2">@item.Title</h5>
+                    <p class="card-text">
+                        <strong>Description:</strong> @item.Description<br />
+                        <strong>Location:</strong> @item.Location<br />
+                        <strong>Salary:</strong> @item.Salary<br />
+                        <strong>Posted:</strong> @item.PostedDate.ToShortDateString()<br />
+                        <strong>Deadline:</strong> @item.Deadline.ToShortDateString()
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        @if (User.IsInRole("Employer"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.JobId" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.JobId" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.JobId" class="btn btn-danger btn-sm">Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-area="" asp-controller="Users" asp-action="Create" class="btn btn-success btn-sm">Apply</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

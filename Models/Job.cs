@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobPortal.Models
 {
@@ -24,13 +25,18 @@ namespace JobPortal.Models
 
         public DateTime Deadline { get; set; }
 
-        // Foreign Key to Users (Employer)
-        public int Id { get; set; }
+        // Foreign Key to Users
+        [ForeignKey("User")]
+        [NotMapped]
+        public int EmployerId { get; set; }
 
-        // Navigation property to the Employer (User)
-        public virtual ApplicationUser? Employer { get; set; }
+        // Navigation property
+        [NotMapped]
+        public virtual User? Employer { get; set; }= null;
+        
 
-        // Navigation property to Applications (Jobs can have many applications)
-        public ICollection<Application> Applications { get; set; }
+        //(Jobs can have many applications)
+        [NotMapped]
+        public ICollection<Application>? Applications { get; set; }=null;
     }
 }

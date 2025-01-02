@@ -418,3 +418,4 @@ C:\Users\Tolesa.Ijara\JobPortal\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.
 C:\Users\Tolesa.Ijara\JobPortal\obj\Debug\net9.0\scopedcss\projectbundle\JobPortal.bundle.scp.css
 C:\Users\Tolesa.Ijara\JobPortal\obj\Debug\net9.0\compressed\8ga384lmvf-o4jubn66tb.gz
 C:\Users\Tolesa.Ijara\JobPortal\obj\Debug\net9.0\compressed\1lctz6r0fk-o4jubn66tb.gz
+C:\Users\Tolesa.Ijara\JobPortal\obj\Debug\net9.0\JobPortal.sourcelink.json

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobPortal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241224104406_tryAgain")]
-    partial class tryAgain
+    [Migration("20250101055846_UpdateJobModelToUseU")]
+    partial class UpdateJobModelToUseU
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,7 @@ namespace JobPortal.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Id")
+                    b.Property<string>("EmployerId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -46,7 +46,7 @@ namespace JobPortal.Migrations
 
                     b.HasKey("ApplicationId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("EmployerId");
 
                     b.HasIndex("JobId");
 
@@ -130,10 +130,7 @@ namespace JobPortal.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EmployerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Id")
+                    b.Property<int>("EmployerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Location")
@@ -325,28 +322,30 @@ namespace JobPortal.Migrations
 
             modelBuilder.Entity("JobPortal.Models.Application", b =>
                 {
-                    b.HasOne("JobPortal.Models.ApplicationUser", "User")
+                    b.HasOne("JobPortal.Models.ApplicationUser", "Employer")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("EmployerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobPortal.Models.Job", "Job")
-                        .WithMany("Applications")
+                        .WithMany()
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Job");
+                    b.Navigation("Employer");
 
-                    b.Navigation("User");
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("JobPortal.Models.Job", b =>
                 {
-                    b.HasOne("JobPortal.Models.ApplicationUser", "Employer")
+                    b.HasOne("JobPortal.Models.User", "Employer")
                         .WithMany()
-                        .HasForeignKey("EmployerId");
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Employer");
                 });
@@ -400,11 +399,6 @@ namespace JobPortal.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("JobPortal.Models.Job", b =>
-                {
-                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }

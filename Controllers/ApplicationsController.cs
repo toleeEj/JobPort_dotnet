@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JobPortal.Data;
 using JobPortal.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobPortal.Controllers
 {
@@ -20,6 +21,7 @@ namespace JobPortal.Controllers
         }
 
         // GET: Applications
+        [Authorize(Roles = "JobSeeker, Employer")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Applications.Include(a => a.Job).Include(a => a.User);
@@ -27,6 +29,7 @@ namespace JobPortal.Controllers
         }
 
         // GET: Applications/Details/5
+        [Authorize(Roles = "JobSeeker, Employer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,9 +50,10 @@ namespace JobPortal.Controllers
         }
 
         // GET: Applications/Create
+        [Authorize(Roles = "Employer")]
         public IActionResult Create()
         {
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId");
+            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title");
             ViewData["Id"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
@@ -59,20 +63,21 @@ namespace JobPortal.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,AppliedDate,JobId,Id,Status,Notes")] Application application)
+        public async Task<IActionResult> Create(Application application)
         {
-            if (ModelState.IsValid)
-            {
+            // if (ModelState.IsValid)
+            // {
                 _context.Add(application);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId", application.JobId);
+            // }
+            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title", application.JobId);
             ViewData["Id"] = new SelectList(_context.Users, "Id", "Email", application.Id);
             return View(application);
         }
 
         // GET: Applications/Edit/5
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +90,7 @@ namespace JobPortal.Controllers
             {
                 return NotFound();
             }
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId", application.JobId);
+            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title", application.JobId);
             ViewData["Id"] = new SelectList(_context.Users, "Id", "Email", application.Id);
             return View(application);
         }
@@ -122,12 +127,13 @@ namespace JobPortal.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId", application.JobId);
+            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title", application.JobId);
             ViewData["Id"] = new SelectList(_context.Users, "UsIderId", "Email", application.Id);
             return View(application);
         }
 
         // GET: Applications/Delete/5
+        [Authorize(Roles = "Employer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -3,6 +3,7 @@ using System;
 using JobPortal.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobPortal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241231134522_UpdateJobModelToUseUser")]
+    partial class UpdateJobModelToUseUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -26,8 +29,9 @@ namespace JobPortal.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("EmployerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("JobId")
                         .HasColumnType("INTEGER");
@@ -42,7 +46,7 @@ namespace JobPortal.Migrations
 
                     b.HasKey("ApplicationId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("EmployerId");
 
                     b.HasIndex("JobId");
 
@@ -126,8 +130,9 @@ namespace JobPortal.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("EmployerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("EmployerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -318,26 +323,26 @@ namespace JobPortal.Migrations
 
             modelBuilder.Entity("JobPortal.Models.Application", b =>
                 {
-                    b.HasOne("JobPortal.Models.User", "User")
+                    b.HasOne("JobPortal.Models.ApplicationUser", "Employer")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("EmployerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("JobPortal.Models.Job", "Job")
-                        .WithMany()
+                        .WithMany("Applications")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Job");
+                    b.Navigation("Employer");
 
-                    b.Navigation("User");
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("JobPortal.Models.Job", b =>
                 {
-                    b.HasOne("JobPortal.Models.User", "Employer")
+                    b.HasOne("JobPortal.Models.ApplicationUser", "Employer")
                         .WithMany()
                         .HasForeignKey("EmployerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -395,6 +400,11 @@ namespace JobPortal.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JobPortal.Models.Job", b =>
+                {
+                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }

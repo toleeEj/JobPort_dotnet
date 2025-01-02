@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JobPortal.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -98,6 +99,12 @@ namespace JobPortal.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Role")]
+            public string Role { get; set; } // Add this property
+
+
         }
 
 
@@ -111,18 +118,45 @@ namespace JobPortal.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+           
+           
+           
+           
+           if (ModelState.IsValid)
             {
+                // Create the user object
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // Create the user with the provided password
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    // Assign the role specified by the user during registration
+                    if (Input.Role == "Employer" || Input.Role == "JobSeeker")
+                    {
+                        var roleResult = await _userManager.AddToRoleAsync(user, Input.Role);
+                        if (!roleResult.Succeeded)
+                        {
+                            foreach (var error in roleResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return Page(); // Return to the registration page if role assignment fails
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid role selected.");
+                        return Page(); // Return to the registration page if an invalid role is selected
+                    }
+
+                    // Generate email confirmation token
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -132,6 +166,7 @@ namespace JobPortal.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
+                    // Send confirmation email
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
@@ -145,11 +180,16 @@ namespace JobPortal.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
+                // Handle errors during user creation
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+
+
 
             // If we got this far, something failed, redisplay form
             return Page();
